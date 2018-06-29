@@ -19,6 +19,12 @@ function computed_field_field_dll_page_link_compute(&$entity_field, $entity_type
 	elseif ($entity->type == 'dll_work') {
 		$output = '<a href="https://hobbes.rccc.ou.edu/dll-biblio/dll-work/' . $identifier . '">https://hobbes.rccc.ou.edu/dll-biblio/dll-work/' .$identifier . '</a>';
 		}
+	elseif ($entity->type == 'dll_work') {
+		$output = '<a href="https://hobbes.rccc.ou.edu/dll-biblio/item-record/' . $identifier . '">https://hobbes.rccc.ou.edu/dll-biblio/dll-work/' .$identifier . '</a>';
+		}
+	elseif ($entity->type == 'web_page') {
+		$output = '<a href="https://hobbes.rccc.ou.edu/dll-biblio/web-page/' . $identifier . '">https://hobbes.rccc.ou.edu/dll-biblio/dll-work/' .$identifier . '</a>';
+		}
 	else {
 		return;
 		}

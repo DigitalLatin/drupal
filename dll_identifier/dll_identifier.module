@@ -12,20 +12,20 @@ function computed_field_field_dll_identifier_compute(&$entity_field, $entity_typ
     $entity_field[0]['value'] = 'value';
 
 // Define variables for the authorized name and the nid.
-	$identifier = $entity->nid;
+	$identifier = $entity->field_dll_number['und'][0]['value'];
 	 
 // Generate the output.
 	if ($entity->type == 'author_authorities') {
-		$output = 'dllcat:aa' . $identifier;
+		$output = 'dllcatA' . $identifier;
 		}
 	elseif ($entity->type == 'dll_work') {
-		$output = 'dllcat:w' . $identifier;
+		$output = 'dllcatW' . $identifier;
 		}
 	elseif ($entity->type == 'repository_item') {
-		$output = 'dllcat:ir' . $identifier;
+		$output = 'dllcatIR' . $identifier;
 		}
 	elseif ($entity->type == 'web_page') {
-		$output = 'dllcat:wp' . $identifier;
+		$output = 'dllcatWP' . $identifier;
 		}
 	else {
 		$output = $identifier;

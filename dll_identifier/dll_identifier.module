@@ -16,16 +16,16 @@ function computed_field_field_dll_identifier_compute(&$entity_field, $entity_typ
 	 
 // Generate the output.
 	if ($entity->type == 'author_authorities') {
-		$output = 'dllcatA' . $identifier;
+		$output = 'dllcat:A' . $identifier;
 		}
 	elseif ($entity->type == 'dll_work') {
-		$output = 'dllcatW' . $identifier;
+		$output = 'dllcat:W' . $identifier;
 		}
 	elseif ($entity->type == 'repository_item') {
-		$output = 'dllcatIR' . $identifier;
+		$output = 'dllcat:IR' . $identifier;
 		}
 	elseif ($entity->type == 'web_page') {
-		$output = 'dllcatWP' . $identifier;
+		$output = 'dllcat:WP' . $identifier;
 		}
 	else {
 		$output = $identifier;

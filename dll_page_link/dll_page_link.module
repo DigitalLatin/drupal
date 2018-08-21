@@ -9,21 +9,21 @@ function computed_field_field_dll_page_link_compute(&$entity_field, $entity_type
     $entity_field[0]['value'] = 'value';
 	
 	$author_name = $entity->field_authorized_name['und'][0]['value'];
-	$identifier = $entity->nid;
+	$identifier = $entity->field_dll_identifier['und'][0]['value'];
 	$work_name = $entity->field_work_name['und'][0]['value'];
 
 	// Generate the output URL based on content type.
 	if ($entity->type == 'author_authorities') {
-		$output = '<a href="https://hobbes.rccc.ou.edu/dll-biblio/dll-author/' . $identifier . '">https://hobbes.rccc.ou.edu/dll-biblio/dll-author/' .$identifier . '</a>';
+		$output = '<a href="https://catalog.digitallatin.org/dll-author' . $identifier . '">https://catalog.digitallatin.org/dll-author/' .$identifier . '</a>';
 		}
 	elseif ($entity->type == 'dll_work') {
-		$output = '<a href="https://hobbes.rccc.ou.edu/dll-biblio/dll-work/' . $identifier . '">https://hobbes.rccc.ou.edu/dll-biblio/dll-work/' .$identifier . '</a>';
+		$output = '<a href="https://catalog.digitallatin.org/dll-work/' . $identifier . '">https://catalog.digitallatin.org/dll-work/' .$identifier . '</a>';
 		}
-	elseif ($entity->type == 'dll_work') {
-		$output = '<a href="https://hobbes.rccc.ou.edu/dll-biblio/item-record/' . $identifier . '">https://hobbes.rccc.ou.edu/dll-biblio/dll-work/' .$identifier . '</a>';
+	elseif ($entity->type == 'repository_item') {
+		$output = '<a href="https://catalog.digitallatin.org/dll-item-record/' . $identifier . '">https://catalog.digitallatin.org/dll-item-record/' .$identifier . '</a>';
 		}
 	elseif ($entity->type == 'web_page') {
-		$output = '<a href="https://hobbes.rccc.ou.edu/dll-biblio/web-page/' . $identifier . '">https://hobbes.rccc.ou.edu/dll-biblio/dll-work/' .$identifier . '</a>';
+		$output = '<a href="https://catalog.digitallatin.org/dll-web-page/' . $identifier . '">https://catalog.digitallatin.org/dll-web-page/' .$identifier . '</a>';
 		}
 	else {
 		return;

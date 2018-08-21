@@ -1,0 +1,13 @@
+<?php
+
+/** 
+* Forces pathauto to set migrated nodes to have the "Generate automatic URL alias"
+* box checked. Modified from suggestion by user https://www.drupal.org/u/webservant316
+* Original comment at https://www.drupal.org/project/pathauto/issues/2660640#comment-11815712
+* 
+* Implemented by Samuel J. Huskey (huskey@ou.edu)
+*/
+
+function force_alias_node_presave($node) {
+      $entity->path['pathauto'] = TRUE;
+}

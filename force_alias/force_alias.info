@@ -1,0 +1,3 @@
+name = Force URL Alias
+description = Forces "Generate automatic URL alias" to be true.
+core = 7.x

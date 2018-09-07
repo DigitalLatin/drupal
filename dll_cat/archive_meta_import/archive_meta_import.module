@@ -1,0 +1,118 @@
+<?php
+/**
+ * @file
+ * Contains hooks for Archive Meta Import module.
+ */
+module_load_include('inc', 'archive_meta_import', 'archive_meta_import.helpers');
+
+
+/**
+ * Implements hook_menu().
+ */
+function archive_meta_import_menu() {
+  $items['admin/DLL'] = array(
+    'title' => 'DLL',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('archive_meta_import_admin_form'),
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
+    'file' => 'archive_meta_import.admin.inc',
+  );
+  $items['admin/DLL/import-settings'] = array(
+    'title' => 'Set Import URLs',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function archive_meta_import_cron() {
+	$is_scheduled = variable_get('meta_import_scheduled', FALSE);
+  if ($is_scheduled) {
+  	// populating urls queue.
+  	_archive_meta_import_urls_queue_populate();
+  	variable_set('meta_import_scheduled', FALSE);
+  }
+}
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+
+function archive_meta_import_cron_queue_info() {
+	$queues = array();
+	// queue of repositories urls
+	$queues['archive_meta_import_process_urls'] = array(
+		'worker callback' => '_archive_meta_import_process_urls_worker',
+		'time' => 6000,
+		//'skip on cron' => TRUE,
+	);
+	// queue of fetched metadata
+	$queues['archive_meta_import_metadata'] = array(
+		'worker callback' => '_archive_meta_import_metadata_worker',
+		'time' => 6000,
+		//'skip on cron' => TRUE,
+	);
+	// queue of records fetched from metadata
+	$queues['archive_meta_import_records'] = array(
+		'worker callback' => '_archive_meta_import_records_worker',
+		'time' => 6000,
+		//'skip on cron' => TRUE,
+	);
+
+	return $queues;
+}
+
+/**
+ * Worker function for archive_meta_import_process_urls queue.
+ *
+ * @see hook_cron_queue_info().
+ */
+function _archive_meta_import_process_urls_worker($item) {
+	$data = _archive_meta_import_get_xml($item);
+	if (isset($data) && !empty($data)) {
+		_archive_meta_import_metadata_queue_populate($data, $item);
+		watchdog('archive_meta_import', t('Metadata was successfully harvested from url: @item', array('@item' => $item)), array(), WATCHDOG_NOTICE);
+	}
+	else {
+		watchdog('archive_meta_import', t('Unable to parse data from url: @item',  array('@item' => $item)), array(), WATCHDOG_NOTICE);
+	}
+}
+
+/**
+ * Worker function for archive_meta_import_metadata queue.
+ *
+ * @see hook_cron_queue_info().
+ */
+function _archive_meta_import_metadata_worker($item) {
+	$metadata = _archive_meta_import_parse_xml($item['data']);
+	if (isset($metadata) && !empty($metadata) && is_array($metadata)) {
+		foreach ($metadata as $record) {
+			_archive_meta_import_records_queue_populate($record);
+		}
+		watchdog('archive_meta_import', t('Metadata was parsed successfully from url: @item', array('@item' => $item['url'])), array(), WATCHDOG_NOTICE);
+	}
+	else {
+		watchdog('archive_meta_import', t('Failed to parse metadata from url: @item', array('@item' => $item['url'])), array(), WATCHDOG_NOTICE);
+	}
+}
+
+/**
+ * Worker function for archive_meta_import_records queue.
+ *
+ * @see hook_cron_queue_info().
+ */
+function _archive_meta_import_records_worker($item) {
+	$node_exists = _archive_meta_import_check_node_by_identifier($item['unique_identifier']);
+
+  if (!$node_exists && isset($item['metadata'])) {
+   	_archive_meta_import_prep_meta_node($item['metadata'], $item['unique_identifier'], $item['repo']);
+  }
+  elseif($node_exists && isset($item['metadata'])) {
+  	_archive_meta_import_update_meta_node($node_exists, $item['metadata'], $item['unique_identifier'], $item['repo']);
+  }
+}

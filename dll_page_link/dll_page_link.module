@@ -14,7 +14,7 @@ function computed_field_field_dll_page_link_compute(&$entity_field, $entity_type
 
 	// Generate the output URL based on content type.
 	if ($entity->type == 'author_authorities') {
-		$output = '<a href="https://catalog.digitallatin.org/dll-author' . $identifier . '">https://catalog.digitallatin.org/dll-author/' .$identifier . '</a>';
+		$output = '<a href="https://catalog.digitallatin.org/dll-author/' . $identifier . '">https://catalog.digitallatin.org/dll-author/' .$identifier . '</a>';
 		}
 	elseif ($entity->type == 'dll_work') {
 		$output = '<a href="https://catalog.digitallatin.org/dll-work/' . $identifier . '">https://catalog.digitallatin.org/dll-work/' .$identifier . '</a>';
